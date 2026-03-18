@@ -33,24 +33,45 @@ export const getAccessToken = async () => {
 };
 
 /**
- * Fetches the Spotify global top 50 playlist
+ * Fetches trending/popular tracks via the Search API.
+ * Spotify restricted access to editorial playlists (404/403) for client_credentials,
+ * so we use search as a reliable alternative.
  */
 export const getSpotifyChart = async () => {
   const { access_token } = await getAccessToken();
-  const response = await fetch(`https://api.spotify.com/v1/playlists/37i9dQZEVXbMDoHDwVN2tF`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-    cache: "no-store",
-  });
+  if (!access_token) return null;
 
-  if (!response.ok) {
-    const text = await response.text();
-    console.warn("Failed to fetch Spotify chart:", response.status, text);
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=year%3A2025+genre%3Apop&type=track&limit=50&market=US`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.warn("Failed to fetch Spotify chart via search:", response.status, text);
+      return null;
+    }
+
+    const data = await response.json();
+    const tracks = data.tracks?.items || [];
+
+    // Transform into the format the web-player page expects
+    return {
+      name: "Global Top Hits",
+      description: "The biggest tracks in the world right now — powered by Spotify.",
+      images: tracks.length > 0 ? [{ url: tracks[0].album?.images?.[0]?.url }] : [],
+      tracks: {
+        items: tracks.map((track: any) => ({ track })),
+      },
+    };
+  } catch (err) {
+    console.error("getSpotifyChart error:", err);
     return null;
   }
-
-  return response.json();
 };
 
 /**
@@ -58,6 +79,8 @@ export const getSpotifyChart = async () => {
  */
 export const getSpotifyPlaylist = async (playlistId: string) => {
   const { access_token } = await getAccessToken();
+  if (!access_token) return null;
+
   const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
@@ -79,6 +102,8 @@ export const getSpotifyPlaylist = async (playlistId: string) => {
  */
 export const searchSpotify = async (query: string, limit = 20) => {
   const { access_token } = await getAccessToken();
+  if (!access_token) return null;
+
   const response = await fetch(
     `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,album,artist&limit=${limit}`,
     {
@@ -98,33 +123,56 @@ export const searchSpotify = async (query: string, limit = 20) => {
 }
 
 /**
- * Fetches Spotify Featured Playlists
+ * Fetches popular playlists via Search API (replaces broken browse/featured-playlists)
  */
 export const getFeaturedPlaylists = async (limit = 6) => {
   const { access_token } = await getAccessToken();
-  const response = await fetch(`https://api.spotify.com/v1/browse/featured-playlists?limit=${limit}`, {
-    headers: { Authorization: `Bearer ${access_token}` },
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    console.warn("Failed to fetch featured playlists:", response.status);
+  if (!access_token) return null;
+
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=top+hits+2025&type=playlist&limit=${limit}&market=US`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      console.warn("Failed to fetch playlists via search:", response.status);
+      return null;
+    }
+    const data = await response.json();
+    return { playlists: data.playlists };
+  } catch (err) {
+    console.error("getFeaturedPlaylists error:", err);
     return null;
   }
-  return response.json();
 };
 
 /**
- * Fetches Spotify New Releases (Albums)
+ * Fetches new releases via Search API (replaces broken browse/new-releases)
  */
 export const getNewReleases = async (limit = 8) => {
   const { access_token } = await getAccessToken();
-  const response = await fetch(`https://api.spotify.com/v1/browse/new-releases?limit=${limit}`, {
-    headers: { Authorization: `Bearer ${access_token}` },
-    cache: "no-store",
-  });
-  if (!response.ok) {
-    console.warn("Failed to fetch new releases:", response.status);
+  if (!access_token) return null;
+
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=tag%3Anew&type=album&limit=${limit}&market=US`,
+      {
+        headers: { Authorization: `Bearer ${access_token}` },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      console.warn("Failed to fetch new releases via search:", response.status);
+      return null;
+    }
+    const data = await response.json();
+    return { albums: data.albums };
+  } catch (err) {
+    console.error("getNewReleases error:", err);
     return null;
   }
-  return response.json();
 };
+
