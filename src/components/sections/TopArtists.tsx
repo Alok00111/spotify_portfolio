@@ -128,14 +128,14 @@ export default function TopArtists({ releases }: { releases?: DeezerAlbum[] }) {
   const isLive = releases && releases.length > 0;
 
   const displayArtists = isLive
-    ? releases.map((r) => ({
-        id: `deezer-${r.id}`,
-        name: r.artist?.name || "Unknown Artist",
-        genre: r.record_type || "Album",
-        listeners: r.title,
+    ? releases.filter(Boolean).map((r: any) => ({
+        id: `spotify-album-${r.id}`,
+        name: r.artists?.[0]?.name || "Unknown Artist",
+        genre: r.album_type || "Album",
+        listeners: r.name,
         color: "#1DB954",
-        image: r.artist?.picture_medium || r.cover_medium,
-        albumName: r.title,
+        image: r.images?.[0]?.url,
+        albumName: r.name,
       }))
     : fallbackArtists.map((a, i) => ({ ...a, id: `fallback-artist-${i}` }));
 

@@ -65,15 +65,15 @@ export default function DiscoverWeekly({ playlists }: { playlists?: DeezerPlayli
   const headingRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
-  // Map real Deezer data to our UI shape, or use fallbacks if data is missing
+  // Map real Spotify data to our UI shape, or use fallbacks if data is missing
   const displayPlaylists = playlists?.length
-    ? playlists.map((p) => ({
-        id: `deezer-${p.id}`,
-        title: p.title,
-        description: `A curated playlist by ${p.user?.name || "Deezer"}`,
-        tracks: `${p.nb_tracks} songs`,
+    ? playlists.filter(Boolean).map((p: any) => ({
+        id: `spotify-${p.id}`,
+        title: p.name || "Untitled Playlist",
+        description: p.description ? (p.description.replace(/<[^>]*>?/gm, '')) : `A curated playlist by ${p.owner?.display_name || "Spotify"}`,
+        tracks: `${p.tracks?.total || "??"} songs`,
         updated: "Recently updated",
-        image: p.picture_big || p.picture_medium,
+        image: p.images?.[0]?.url,
         gradient: "from-[#1DB954] to-[#134e30]",
       }))
     : fallbackPlaylists.map((p, i) => ({ ...p, id: `fallback-${i}`, image: undefined }));
