@@ -11,6 +11,9 @@ import CrossPlatform from "@/components/sections/CrossPlatform";
 import FooterCTA from "@/components/sections/FooterCTA";
 import { getFeaturedPlaylists, getNewReleases } from "@/lib/spotify";
 
+// Force dynamic rendering — this page fetches live Spotify data
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   let chartPlaylists: any[] = [];
   let chartAlbums: any[] = [];
