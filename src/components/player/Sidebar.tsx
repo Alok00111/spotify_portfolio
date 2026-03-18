@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Search, Library, PlusSquare, Heart, Bookmark } from "lucide-react";
+import { Home, Search, Library, PlusSquare, Heart, Bookmark, ArrowLeft } from "lucide-react";
 
 export default function Sidebar() {
   return (
@@ -19,6 +19,10 @@ export default function Sidebar() {
 
       <nav className="px-3">
         <div className="space-y-1 bg-[#121212] p-2 rounded-lg">
+          <Link href="/" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
+            <ArrowLeft className="w-6 h-6" />
+            Back to Website
+          </Link>
           <Link href="/web-player" className="flex items-center gap-4 px-3 py-2.5 text-white bg-white/10 rounded-md transition-colors font-semibold">
             <Home className="w-6 h-6" />
             Home

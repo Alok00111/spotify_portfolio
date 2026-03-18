@@ -1,6 +1,10 @@
 import { getSpotifyChart } from "@/lib/spotify";
 import TrackRow from "@/components/player/TrackRow";
 import { Clock } from "lucide-react";
+import WebPlayerMainPlayButton from "@/components/player/WebPlayerMainPlayButton";
+
+// Force this page to always be rendered dynamically (never statically cached at build)
+export const dynamic = "force-dynamic";
 
 const DUMMY_FALLBACK = {
   title: "Chart (Offline Mode)",
@@ -74,9 +78,7 @@ export default async function WebPlayerPage() {
       <div className="px-8 mt-6">
         {/* Play Button Row */}
         <div className="flex items-center gap-6 mb-8">
-          <button className="w-14 h-14 bg-spotify rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-lg shadow-spotify/20">
-            <svg className="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-          </button>
+          <WebPlayerMainPlayButton tracks={tracks} />
           <button className="w-8 h-8 rounded-full border border-white/50 flex items-center justify-center text-white/70 hover:text-white hover:border-white transition-colors">
             <span className="text-xl leading-none mb-1">+</span>
           </button>

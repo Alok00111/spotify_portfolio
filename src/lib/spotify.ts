@@ -1,9 +1,16 @@
-const client_id = process.env.SPOTIFY_CLIENT_ID;
-const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
 export const getAccessToken = async () => {
+  const client_id = process.env.SPOTIFY_CLIENT_ID || "";
+  const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
+  
+  if (!client_id || !client_secret) {
+    console.error("SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET is missing from environment variables!");
+    return { access_token: null };
+  }
+  
+  const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+
   const response = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: {
@@ -15,7 +22,14 @@ export const getAccessToken = async () => {
     }),
     cache: "no-store",
   });
-  return response.json();
+  
+  const data = await response.json();
+  
+  if (!data.access_token) {
+    console.error("Failed to get Spotify access token:", JSON.stringify(data));
+  }
+  
+  return data;
 };
 
 /**
@@ -27,7 +41,7 @@ export const getSpotifyChart = async () => {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -48,7 +62,7 @@ export const getSpotifyPlaylist = async (playlistId: string) => {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -71,7 +85,7 @@ export const searchSpotify = async (query: string, limit = 20) => {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
-      next: { revalidate: 3600 },
+      cache: "no-store",
     }
   );
 
@@ -90,7 +104,7 @@ export const getFeaturedPlaylists = async (limit = 6) => {
   const { access_token } = await getAccessToken();
   const response = await fetch(`https://api.spotify.com/v1/browse/featured-playlists?limit=${limit}`, {
     headers: { Authorization: `Bearer ${access_token}` },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
   if (!response.ok) {
     console.warn("Failed to fetch featured playlists:", response.status);
@@ -106,7 +120,7 @@ export const getNewReleases = async (limit = 8) => {
   const { access_token } = await getAccessToken();
   const response = await fetch(`https://api.spotify.com/v1/browse/new-releases?limit=${limit}`, {
     headers: { Authorization: `Bearer ${access_token}` },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
   if (!response.ok) {
     console.warn("Failed to fetch new releases:", response.status);

@@ -32,6 +32,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(30);
   const [volume, setVolume] = useState(0.5);
+  const [isFallbackPlayback, setIsFallbackPlayback] = useState(false);
 
   // Spotify SDK state
   const [spotifyConnected, setSpotifyConnected] = useState(false);
@@ -215,21 +216,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (res.ok || res.status === 204) {
+          setIsFallbackPlayback(false);
           setIsPlaying(true);
         } else {
           const errText = await res.text();
           console.warn("Spotify play failed, falling back to iTunes:", res.status, errText);
-          // Fall through to iTunes fallback below
+          setIsFallbackPlayback(true);
           await playWithFallback(track);
         }
       } catch (err) {
         console.error("Spotify SDK play error:", err);
+        setIsFallbackPlayback(true);
         await playWithFallback(track);
       }
       return;
     }
 
     // MODE 2: iTunes preview fallback
+    setIsFallbackPlayback(true);
     await playWithFallback(track);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spotifyConnected, spotifyDeviceId, spotifyToken, currentTrack]);
@@ -283,13 +287,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // ─── Toggle Play/Pause ───
   const togglePlayPause = useCallback(() => {
-    if (spotifyConnected && spotifyPlayerRef.current) {
+    if (spotifyConnected && spotifyPlayerRef.current && !isFallbackPlayback) {
       spotifyPlayerRef.current.togglePlay();
       return;
     }
     togglePlayPauseAudio();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spotifyConnected, isPlaying, currentTrack]);
+  }, [spotifyConnected, isPlaying, currentTrack, isFallbackPlayback]);
 
   const togglePlayPauseAudio = () => {
     if (!audioRef.current || !currentTrack || !currentTrack.previewUrl) return;
@@ -317,7 +321,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
 
   // ─── Seek ───
   const seekTo = useCallback((percentage: number) => {
-    if (spotifyConnected && spotifyPlayerRef.current) {
+    if (spotifyConnected && spotifyPlayerRef.current && !isFallbackPlayback) {
       const positionMs = (percentage / 100) * duration * 1000;
       spotifyPlayerRef.current.seek(positionMs);
       setProgress((percentage / 100) * duration);
