@@ -20,7 +20,7 @@ export const getAccessToken = async () => {
     body: new URLSearchParams({
       grant_type: "client_credentials",
     }),
-    cache: "no-store",
+    next: { revalidate: 3500 }, // Cache token for a bit less than 1 hour
   });
   
   const data = await response.json();
@@ -39,31 +39,41 @@ export const getAccessToken = async () => {
  */
 export const getSpotifyChart = async () => {
   const { access_token } = await getAccessToken();
-  if (!access_token) return null;
+  if (!access_token) {
+    console.error("getSpotifyChart: No access token available");
+    return null;
+  }
 
   try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=year%3A2025+genre%3Apop&type=track&limit=50&market=US`,
-      {
-        headers: { Authorization: `Bearer ${access_token}` },
-        cache: "no-store",
-      }
-    );
+    const params = new URLSearchParams({
+      q: "top hits 2025",
+      type: "track",
+      limit: "20",
+      market: "US",
+    });
+    const url = `https://api.spotify.com/v1/search?${params.toString()}`;
+    console.log("getSpotifyChart: Fetching", url);
+
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${access_token}` },
+      next: { revalidate: 3600 },
+    });
 
     if (!response.ok) {
       const text = await response.text();
-      console.warn("Failed to fetch Spotify chart via search:", response.status, text);
+      console.error("getSpotifyChart: API error", response.status, text);
       return null;
     }
 
     const data = await response.json();
-    const tracks = data.tracks?.items || [];
+    const tracks = (data.tracks?.items || []).filter(Boolean);
+    console.log("getSpotifyChart: Got", tracks.length, "tracks");
 
     // Transform into the format the web-player page expects
     return {
       name: "Global Top Hits",
       description: "The biggest tracks in the world right now — powered by Spotify.",
-      images: tracks.length > 0 ? [{ url: tracks[0].album?.images?.[0]?.url }] : [],
+      images: tracks.length > 0 ? [{ url: tracks[0]?.album?.images?.[0]?.url }] : [],
       tracks: {
         items: tracks.map((track: any) => ({ track })),
       },
@@ -85,7 +95,7 @@ export const getSpotifyPlaylist = async (playlistId: string) => {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
-    cache: "no-store",
+    next: { revalidate: 3600 },
   });
 
   if (!response.ok) {
@@ -110,7 +120,7 @@ export const searchSpotify = async (query: string, limit = 20) => {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
-      cache: "no-store",
+      next: { revalidate: 3600 },
     }
   );
 
@@ -134,7 +144,7 @@ export const getFeaturedPlaylists = async (limit = 6) => {
       `https://api.spotify.com/v1/search?q=top+hits+2025&type=playlist&limit=${limit}&market=US`,
       {
         headers: { Authorization: `Bearer ${access_token}` },
-        cache: "no-store",
+        next: { revalidate: 3600 },
       }
     );
     if (!response.ok) {
@@ -161,7 +171,7 @@ export const getNewReleases = async (limit = 8) => {
       `https://api.spotify.com/v1/search?q=tag%3Anew&type=album&limit=${limit}&market=US`,
       {
         headers: { Authorization: `Bearer ${access_token}` },
-        cache: "no-store",
+        next: { revalidate: 3600 },
       }
     );
     if (!response.ok) {
