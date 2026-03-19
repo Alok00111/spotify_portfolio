@@ -1,5 +1,23 @@
 const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`;
 
+let cachedToken: string | null = null;
+let tokenExpiresAt = 0;
+
+const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): Promise<Response> => {
+  for (let i = 0; i < retries; i++) {
+    const response = await fetch(url, options);
+    if (response.status === 429) {
+      const retryAfter = response.headers.get("Retry-After");
+      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : Math.pow(2, i) * 1000 + 500;
+      console.warn(`[Spotify API] Rate Limited (429). Retrying after ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      continue;
+    }
+    return response;
+  }
+  return fetch(url, options);
+};
+
 export const getAccessToken = async () => {
   const client_id = process.env.SPOTIFY_CLIENT_ID || "";
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
@@ -9,9 +27,14 @@ export const getAccessToken = async () => {
     return { access_token: null };
   }
   
+  // Return in-memory cached token if valid
+  if (cachedToken && Date.now() < tokenExpiresAt) {
+    return { access_token: cachedToken };
+  }
+  
   const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
-  const response = await fetch(TOKEN_ENDPOINT, {
+  const response = await fetchWithRetry(TOKEN_ENDPOINT, {
     method: "POST",
     headers: {
       Authorization: `Basic ${basic}`,
@@ -27,6 +50,9 @@ export const getAccessToken = async () => {
   
   if (!data.access_token) {
     console.error("Failed to get Spotify access token:", JSON.stringify(data));
+  } else {
+    cachedToken = data.access_token;
+    tokenExpiresAt = Date.now() + 3500 * 1000;
   }
   
   return data;
@@ -54,7 +80,7 @@ export const getSpotifyChart = async () => {
     const url = `https://api.spotify.com/v1/search?${params.toString()}`;
     console.log("getSpotifyChart: Fetching", url);
 
-    const response = await fetch(url, {
+    const response = await fetchWithRetry(url, {
       headers: { Authorization: `Bearer ${access_token}` },
       next: { revalidate: 3600 },
     });
@@ -91,7 +117,7 @@ export const getSpotifyPlaylist = async (playlistId: string) => {
   const { access_token } = await getAccessToken();
   if (!access_token) return null;
 
-  const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+  const response = await fetchWithRetry(`https://api.spotify.com/v1/playlists/${playlistId}`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
@@ -114,7 +140,7 @@ export const searchSpotify = async (query: string, limit = 20) => {
   const { access_token } = await getAccessToken();
   if (!access_token) return null;
 
-  const response = await fetch(
+  const response = await fetchWithRetry(
     `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track,album,artist&limit=${limit}`,
     {
       headers: {
@@ -140,7 +166,7 @@ export const getFeaturedPlaylists = async (limit = 6) => {
   if (!access_token) return null;
 
   try {
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://api.spotify.com/v1/search?q=top+hits+2025&type=playlist&limit=${limit}&market=US`,
       {
         headers: { Authorization: `Bearer ${access_token}` },
@@ -167,7 +193,7 @@ export const getNewReleases = async (limit = 8) => {
   if (!access_token) return null;
 
   try {
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://api.spotify.com/v1/search?q=tag%3Anew&type=album&limit=${limit}&market=US`,
       {
         headers: { Authorization: `Bearer ${access_token}` },
