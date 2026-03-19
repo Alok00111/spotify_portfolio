@@ -4,8 +4,12 @@ let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
 const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): Promise<Response> => {
+  // Append a static cache-buster to the URL to force Vercel Edge Cache to build a new cache entry
+  // and discard the stuck 429 Rate Limit responses.
+  const bustedUrl = url.includes("?") ? `${url}&_cb=1` : `${url}?_cb=1`;
+  
   for (let i = 0; i < retries; i++) {
-    const response = await fetch(url, options);
+    const response = await fetch(bustedUrl, options);
     if (response.status === 429) {
       const retryAfter = response.headers.get("Retry-After");
       const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : Math.pow(2, i) * 1000 + 500;
@@ -15,7 +19,7 @@ const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): P
     }
     return response;
   }
-  return fetch(url, options);
+  return fetch(bustedUrl, options);
 };
 
 export const getAccessToken = async () => {
