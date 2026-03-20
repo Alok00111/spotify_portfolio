@@ -4,13 +4,14 @@ let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
 const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): Promise<Response> => {
-  // Append a dynamic cache-buster to the URL to force Vercel Edge Cache to build a new cache entry
-  // and discard stale 429 Rate Limit responses.
-  const cb = Date.now();
-  const bustedUrl = url.includes("?") ? `${url}&_cb=${cb}` : `${url}?_cb=${cb}`;
-  
+  // Use Cache-Control headers to prevent Vercel Edge from serving stale responses
+  // (do NOT append query params like _cb to the URL — Spotify rejects unknown params)
+  const headers = new Headers(options.headers || {});
+  headers.set("Cache-Control", "no-cache");
+  const patchedOptions = { ...options, headers };
+
   for (let i = 0; i < retries; i++) {
-    const response = await fetch(bustedUrl, options);
+    const response = await fetch(url, patchedOptions);
     if (response.status === 429) {
       const retryAfter = response.headers.get("Retry-After");
       const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : Math.pow(2, i) * 1000 + 500;
@@ -26,7 +27,7 @@ const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): P
     }
     return response;
   }
-  return fetch(bustedUrl, options);
+  return fetch(url, patchedOptions);
 };
 
 export const getAccessToken = async () => {
