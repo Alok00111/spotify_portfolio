@@ -4,9 +4,10 @@ let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
 const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): Promise<Response> => {
-  // Append a static cache-buster to the URL to force Vercel Edge Cache to build a new cache entry
-  // and discard the stuck 429 Rate Limit responses.
-  const bustedUrl = url.includes("?") ? `${url}&_cb=1` : `${url}?_cb=1`;
+  // Append a dynamic cache-buster to the URL to force Vercel Edge Cache to build a new cache entry
+  // and discard stale 429 Rate Limit responses.
+  const cb = Date.now();
+  const bustedUrl = url.includes("?") ? `${url}&_cb=${cb}` : `${url}?_cb=${cb}`;
   
   for (let i = 0; i < retries; i++) {
     const response = await fetch(bustedUrl, options);
@@ -16,6 +17,12 @@ const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): P
       console.warn(`[Spotify API] Rate Limited (429). Retrying after ${delay}ms...`);
       await new Promise(resolve => setTimeout(resolve, delay));
       continue;
+    }
+    // If we get a 401, the token has expired — clear cache so next call gets a fresh one
+    if (response.status === 401) {
+      console.warn(`[Spotify API] Unauthorized (401). Clearing cached token.`);
+      cachedToken = null;
+      tokenExpiresAt = 0;
     }
     return response;
   }
@@ -28,7 +35,7 @@ export const getAccessToken = async () => {
   
   if (!client_id || !client_secret) {
     console.error("SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET is missing from environment variables!");
-    return { access_token: null };
+    return { access_token: null, error: "SPOTIFY_CLIENT_ID or SPOTIFY_CLIENT_SECRET is missing. Check Vercel Env Vars." };
   }
   
   // Return in-memory cached token if valid
@@ -53,7 +60,9 @@ export const getAccessToken = async () => {
   const data = await response.json();
   
   if (!data.access_token) {
-    console.error("Failed to get Spotify access token:", JSON.stringify(data));
+    const errText = JSON.stringify(data);
+    console.error("Failed to get Spotify access token:", errText);
+    return { access_token: null, error: `Failed to get token: ${errText}` };
   } else {
     cachedToken = data.access_token;
     tokenExpiresAt = Date.now() + 3500 * 1000;
@@ -68,15 +77,15 @@ export const getAccessToken = async () => {
  * so we use search as a reliable alternative.
  */
 export const getSpotifyChart = async () => {
-  const { access_token } = await getAccessToken();
+  const { access_token, error: tokenError } = await getAccessToken() as any;
   if (!access_token) {
     console.error("getSpotifyChart: No access token available");
-    return null;
+    return { error: tokenError || "No access token available" };
   }
 
   try {
     const params = new URLSearchParams({
-      q: "top hits 2025",
+      q: "top hits 2026",
       type: "track",
       limit: "20",
       market: "US",
@@ -92,12 +101,33 @@ export const getSpotifyChart = async () => {
     if (!response.ok) {
       const text = await response.text();
       console.error("getSpotifyChart: API error", response.status, text);
-      return null;
+      return { error: `API error ${response.status}: ${text}` };
     }
 
     const data = await response.json();
-    const tracks = (data.tracks?.items || []).filter(Boolean);
-    console.log("getSpotifyChart: Got", tracks.length, "tracks");
+    let tracks = (data.tracks?.items || []).filter(Boolean);
+    console.log("getSpotifyChart: Got", tracks.length, "tracks from primary query");
+
+    // Fallback: if primary query returned no results, try a broader query
+    if (tracks.length === 0) {
+      console.warn("getSpotifyChart: Primary query returned 0 tracks, trying fallback query...");
+      const fallbackParams = new URLSearchParams({
+        q: "popular music",
+        type: "track",
+        limit: "20",
+        market: "US",
+      });
+      const fallbackUrl = `https://api.spotify.com/v1/search?${fallbackParams.toString()}`;
+      const fallbackRes = await fetchWithRetry(fallbackUrl, {
+        headers: { Authorization: `Bearer ${access_token}` },
+        next: { revalidate: 3600 },
+      });
+      if (fallbackRes.ok) {
+        const fallbackData = await fallbackRes.json();
+        tracks = (fallbackData.tracks?.items || []).filter(Boolean);
+        console.log("getSpotifyChart: Got", tracks.length, "tracks from fallback query");
+      }
+    }
 
     // Transform into the format the web-player page expects
     return {
@@ -108,9 +138,9 @@ export const getSpotifyChart = async () => {
         items: tracks.map((track: any) => ({ track })),
       },
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error("getSpotifyChart error:", err);
-    return null;
+    return { error: `Network exception: ${err?.message || String(err)}` };
   }
 };
 
@@ -171,7 +201,7 @@ export const getFeaturedPlaylists = async (limit = 6) => {
 
   try {
     const response = await fetchWithRetry(
-      `https://api.spotify.com/v1/search?q=top+hits+2025&type=playlist&limit=${limit}&market=US`,
+      `https://api.spotify.com/v1/search?q=top+hits+2026&type=playlist&limit=${limit}&market=US`,
       {
         headers: { Authorization: `Bearer ${access_token}` },
         next: { revalidate: 3600 },

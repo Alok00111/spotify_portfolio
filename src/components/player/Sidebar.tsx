@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Search, Library, PlusSquare, Heart, Bookmark, ArrowLeft } from "lucide-react";
+import { Home, Search, Library, PlusSquare, Heart, Bookmark, ArrowLeft, Mic2, BarChart3, Waves } from "lucide-react";
 
 export default function Sidebar() {
   return (
@@ -30,6 +30,18 @@ export default function Sidebar() {
           <Link href="/web-player" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
             <Search className="w-6 h-6" />
             Search
+          </Link>
+          <Link href="/web-player/lyrics" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
+            <Mic2 className="w-6 h-6" />
+            Lyrics
+          </Link>
+          <Link href="/web-player/wrapped" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
+            <BarChart3 className="w-6 h-6" />
+            Wrapped
+          </Link>
+          <Link href="/web-player/visualizer" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
+            <Waves className="w-6 h-6" />
+            Visualizer
           </Link>
         </div>
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const scope = "streaming user-read-email user-read-private";
+  const scope = "streaming user-read-email user-read-private user-top-read";
   const state = Math.random().toString(36).substring(7);
 
   const requestUrl = new URL(request.url);

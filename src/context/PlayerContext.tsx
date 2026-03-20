@@ -18,6 +18,7 @@ interface PlayerContextType {
   duration: number;
   volume: number;
   spotifyConnected: boolean;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   playTrack: (track: TrackData) => void;
   togglePlayPause: () => void;
   setVolumeLevel: (vol: number) => void;
@@ -342,6 +343,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         duration,
         volume,
         spotifyConnected,
+        audioRef,
         playTrack,
         togglePlayPause,
         setVolumeLevel,

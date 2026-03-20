@@ -35,7 +35,9 @@ export default async function WebPlayerPage() {
   let playlistDesc = DUMMY_FALLBACK.description;
   let playlistImage = DUMMY_FALLBACK.picture_big;
 
-  if (chartData && chartData.tracks && chartData.tracks.items) {
+  if (chartData && chartData.error) {
+    playlistDesc = `Could not reach the Spotify API. Debug: ${chartData.error}`;
+  } else if (chartData && chartData.tracks && chartData.tracks.items) {
     tracks = chartData.tracks.items.map((item: any) => item.track).filter(Boolean);
     playlistName = chartData.name || "Global Top Charts";
     playlistDesc = chartData.description || "The biggest tracks in the world right now — powered by Spotify.";
