@@ -27,7 +27,7 @@ export default function Sidebar() {
             <Home className="w-6 h-6" />
             Home
           </Link>
-          <Link href="/web-player" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
+          <Link href="/web-player/search" className="flex items-center gap-4 px-3 py-2.5 text-muted-foreground hover:text-white transition-colors font-semibold">
             <Search className="w-6 h-6" />
             Search
           </Link>
