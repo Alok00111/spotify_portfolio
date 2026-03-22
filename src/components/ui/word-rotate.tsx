@@ -35,7 +35,7 @@ export function WordRotate({
   }, [words, duration])
 
   return (
-    <span className="overflow-hidden py-2 inline-block">
+    <span className="inline-block">
       <AnimatePresence mode="wait">
         <motion.span
           key={words[index]}
