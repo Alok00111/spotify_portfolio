@@ -15,17 +15,17 @@ const footerLinks = [
     links: [
       { label: "About", href: "/about" },
       { label: "Jobs", href: "/jobs" },
-      { label: "For the Record", href: "#" }
+      { label: "For the Record", href: "/for-the-record" }
     ],
   },
   {
     heading: "Communities",
     links: [
       { label: "For Artists", href: "/artists" },
-      { label: "Developers", href: "#" },
-      { label: "Advertising", href: "#" },
-      { label: "Investors", href: "#" },
-      { label: "Vendors", href: "#" }
+      { label: "Developers", href: "/developers" },
+      { label: "Advertising", href: "/advertising" },
+      { label: "Investors", href: "/investors" },
+      { label: "Vendors", href: "/vendors" }
     ],
   },
   {
