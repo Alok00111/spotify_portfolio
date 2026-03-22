@@ -13,25 +13,25 @@ const footerLinks = [
   {
     heading: "Company",
     links: [
-      { label: "About", href: "https://www.spotify.com/us/about-us/contact/" },
-      { label: "Jobs", href: "https://www.lifeatspotify.com/" },
-      { label: "For the Record", href: "https://newsroom.spotify.com/" }
+      { label: "About", href: "/about" },
+      { label: "Jobs", href: "/jobs" },
+      { label: "For the Record", href: "#" }
     ],
   },
   {
     heading: "Communities",
     links: [
-      { label: "For Artists", href: "https://artists.spotify.com/" },
-      { label: "Developers", href: "https://developer.spotify.com/" },
-      { label: "Advertising", href: "https://ads.spotify.com/" },
-      { label: "Investors", href: "https://investors.spotify.com/" },
-      { label: "Vendors", href: "https://spotifyforvendors.com/" }
+      { label: "For Artists", href: "/artists" },
+      { label: "Developers", href: "#" },
+      { label: "Advertising", href: "#" },
+      { label: "Investors", href: "#" },
+      { label: "Vendors", href: "#" }
     ],
   },
   {
     heading: "Useful Links",
     links: [
-      { label: "Support", href: "https://support.spotify.com/" },
+      { label: "Support", href: "/support" },
       { label: "Web Player", href: "/web-player" },
       { label: "Free Mobile App", href: "/download" }
     ],
@@ -231,11 +231,11 @@ export default function FooterCTA() {
 
             {/* Legal */}
             <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground/60">
-              <a href="https://www.spotify.com/us/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Legal</a>
-              <a href="https://www.spotify.com/us/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Privacy Center</a>
-              <a href="https://www.spotify.com/us/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Privacy Policy</a>
-              <a href="https://www.spotify.com/us/legal/cookies-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Cookies</a>
-              <a href="https://www.spotify.com/us/legal/privacy-policy/#s3" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">About Ads</a>
+              <Link href="/legal" className="hover:text-muted-foreground transition-colors">Legal</Link>
+              <Link href="/privacy-center" className="hover:text-muted-foreground transition-colors">Privacy Center</Link>
+              <Link href="/privacy-policy" className="hover:text-muted-foreground transition-colors">Privacy Policy</Link>
+              <Link href="/cookies" className="hover:text-muted-foreground transition-colors">Cookies</Link>
+              <Link href="/about-ads" className="hover:text-muted-foreground transition-colors">About Ads</Link>
               <span>© 2026 Spotify AB</span>
             </div>
           </div>
