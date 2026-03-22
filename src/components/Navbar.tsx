@@ -91,12 +91,14 @@ export default function Navbar() {
           ) : user ? (
             // Logged in state
             <>
-              <Link
-                href="/api/spotify/login"
-                className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-black bg-spotify hover:bg-[#1ed760] hover:scale-105 px-4 py-2 rounded-full transition-all duration-300 mr-2"
-              >
-                Connect Spotify
-              </Link>
+              {!spotifyConnected && (
+                <Link
+                  href="/api/spotify/login"
+                  className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-black bg-spotify hover:bg-[#1ed760] hover:scale-105 px-4 py-2 rounded-full transition-all duration-300 mr-2"
+                >
+                  Connect Spotify
+                </Link>
+              )}
               <Link
                 href="/web-player"
                 className="hidden sm:inline-flex items-center gap-2 text-sm text-foreground bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-colors duration-300 mr-2"
