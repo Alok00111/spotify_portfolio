@@ -13,25 +13,25 @@ const footerLinks = [
   {
     heading: "Company",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Jobs", href: "/jobs" },
-      { label: "For the Record", href: "#" }
+      { label: "About", href: "https://www.spotify.com/us/about-us/contact/" },
+      { label: "Jobs", href: "https://www.lifeatspotify.com/" },
+      { label: "For the Record", href: "https://newsroom.spotify.com/" }
     ],
   },
   {
     heading: "Communities",
     links: [
-      { label: "For Artists", href: "/artists" },
-      { label: "Developers", href: "#" },
-      { label: "Advertising", href: "#" },
-      { label: "Investors", href: "#" },
-      { label: "Vendors", href: "#" }
+      { label: "For Artists", href: "https://artists.spotify.com/" },
+      { label: "Developers", href: "https://developer.spotify.com/" },
+      { label: "Advertising", href: "https://ads.spotify.com/" },
+      { label: "Investors", href: "https://investors.spotify.com/" },
+      { label: "Vendors", href: "https://spotifyforvendors.com/" }
     ],
   },
   {
     heading: "Useful Links",
     links: [
-      { label: "Support", href: "/support" },
+      { label: "Support", href: "https://support.spotify.com/" },
       { label: "Web Player", href: "/web-player" },
       { label: "Free Mobile App", href: "/download" }
     ],
@@ -184,12 +184,23 @@ export default function FooterCTA() {
                 <ul className="space-y-3">
                   {group.links.map((link) => (
                     <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
-                      >
-                        {link.label}
-                      </Link>
+                      {link.href.startsWith("http") ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -201,25 +212,30 @@ export default function FooterCTA() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-white/[0.04]">
             {/* Social icons */}
             <div className="flex items-center gap-4">
-              {socialIcons.map((social) => (
-                <a
-                  key={social.name}
-                  href="/"
-                  className="social-magnetic w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/[0.1] transition-colors duration-300"
-                  aria-label={social.name}
-                >
-                  {social.svg}
-                </a>
-              ))}
+              {socialIcons.map((social) => {
+                const socialHref = social.name === 'Instagram' ? 'https://instagram.com/spotify' : social.name === 'Twitter' ? 'https://twitter.com/spotify' : 'https://facebook.com/spotify';
+                return (
+                  <a
+                    key={social.name}
+                    href={socialHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-magnetic w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-white/[0.1] transition-colors duration-300"
+                    aria-label={social.name}
+                  >
+                    {social.svg}
+                  </a>
+                );
+              })}
             </div>
 
             {/* Legal */}
             <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground/60">
-              <Link href="/" className="hover:text-muted-foreground transition-colors">Legal</Link>
-              <Link href="/" className="hover:text-muted-foreground transition-colors">Privacy Center</Link>
-              <Link href="/" className="hover:text-muted-foreground transition-colors">Privacy Policy</Link>
-              <Link href="/" className="hover:text-muted-foreground transition-colors">Cookies</Link>
-              <Link href="/" className="hover:text-muted-foreground transition-colors">About Ads</Link>
+              <a href="https://www.spotify.com/us/legal/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Legal</a>
+              <a href="https://www.spotify.com/us/privacy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Privacy Center</a>
+              <a href="https://www.spotify.com/us/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Privacy Policy</a>
+              <a href="https://www.spotify.com/us/legal/cookies-policy/" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">Cookies</a>
+              <a href="https://www.spotify.com/us/legal/privacy-policy/#s3" target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">About Ads</a>
               <span>© 2026 Spotify AB</span>
             </div>
           </div>
