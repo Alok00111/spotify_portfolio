@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { Particles } from "@/components/ui/particles";
 import { SparklesText } from "@/components/ui/sparkles-text";
-import { ScrollProgress } from "@/components/ui/scroll-progress";
 import Link from "next/link";
 
 interface ContentPageLayoutProps {
@@ -22,35 +19,8 @@ export default function ContentPageLayout({
   children,
   className
 }: ContentPageLayoutProps) {
-  const router = useRouter();
-  const endRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!endRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Small delay so the user sees the bottom, then redirect
-            setTimeout(() => {
-              router.push("/");
-            }, 1200);
-          }
-        });
-      },
-      { threshold: 1.0 }
-    );
-
-    observer.observe(endRef.current);
-    return () => observer.disconnect();
-  }, [router]);
-
   return (
     <div className={cn("min-h-screen pt-32 pb-24 relative overflow-hidden", className)}>
-      {/* Scroll Progress Bar */}
-      <ScrollProgress className="h-[3px] bg-gradient-to-r from-spotify via-[#1ed760] to-[#15e06c]" />
-
       {/* Background Particles from Magic UI */}
       <Particles
         className="absolute inset-0 pointer-events-none"
@@ -99,13 +69,6 @@ export default function ContentPageLayout({
           <div className="prose prose-invert prose-lg max-w-none prose-p:text-muted-foreground prose-headings:font-[family-name:var(--font-outfit)] prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-a:text-spotify prose-a:no-underline hover:prose-a:underline">
             {children}
           </div>
-        </BlurFade>
-      </div>
-
-      {/* Auto-redirect trigger at the bottom */}
-      <div ref={endRef} className="mt-24 text-center">
-        <BlurFade delay={0.1} inView>
-          <p className="text-sm text-muted-foreground/40 animate-pulse">↑ You've reached the end — redirecting home...</p>
         </BlurFade>
       </div>
     </div>
