@@ -41,7 +41,7 @@ export default async function Home() {
         {/* Section 1: Hero */}
         <HeroSection />
 
-        <div className="py-20 bg-[#0a0a0a] border-t border-b border-white/[0.05] flex justify-center items-center px-6 text-center shadow-[0_0_100px_rgba(29,185,84,0.05)_inset]">
+        <div className="py-24 flex justify-center items-center px-6 text-center">
           <TextAnimate 
             as="p" 
             animation="blurIn" 
