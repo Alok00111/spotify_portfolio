@@ -30,7 +30,20 @@ const fetchWithRetry = async (url: string, options: RequestInit, retries = 3): P
   return fetch(url, patchedOptions);
 };
 
+import { cookies } from "next/headers";
+
 export const getAccessToken = async () => {
+  // First, check if the user is logged in via OAuth and has an active token in cookies
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("spotify_access_token")?.value;
+    if (userToken) {
+      return { access_token: userToken };
+    }
+  } catch (e) {
+    // Ignore error if this is called outside of a request context
+  }
+
   const client_id = process.env.SPOTIFY_CLIENT_ID || "";
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET || "";
   

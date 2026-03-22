@@ -14,7 +14,8 @@ export async function GET(request: Request) {
     client_id: process.env.SPOTIFY_CLIENT_ID || '',
     scope: scope,
     redirect_uri: redirect_uri,
-    state: state
+    state: state,
+    show_dialog: 'true'
   });
 
   return NextResponse.redirect(`https://accounts.spotify.com/authorize?${queryParams.toString()}`);
