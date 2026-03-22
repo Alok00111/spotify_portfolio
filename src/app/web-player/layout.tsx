@@ -1,12 +1,23 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { PlayerProvider } from "@/context/PlayerContext";
 import Sidebar from "@/components/player/Sidebar";
 import BottomPlayer from "@/components/player/BottomPlayer";
 
-export default function WebPlayerLayout({
+export default async function WebPlayerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("spotify_access_token")?.value;
+  const refreshToken = cookieStore.get("spotify_refresh_token")?.value;
+
+  // If the user hasn't connected Spotify, force them to login before accessing the web player
+  if (!token && !refreshToken) {
+    redirect("/api/spotify/login");
+  }
+
   return (
     <PlayerProvider>
       <div className="flex h-screen bg-black overflow-hidden relative">
