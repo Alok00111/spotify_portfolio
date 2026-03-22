@@ -18,9 +18,14 @@ export default function DownloadPage() {
           <p className="text-lg md:text-xl text-muted-foreground mb-12">
             Millions of songs and podcasts. No credit card needed.
           </p>
-          <button className="px-10 py-5 rounded-full bg-spotify text-black font-bold text-lg hover:bg-[#1ed760] hover:scale-105 hover:shadow-[0_0_40px_rgba(29,185,84,0.4)] transition-all duration-300">
+          <a 
+            href="https://www.spotify.com/download/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-10 py-5 rounded-full bg-spotify text-black font-bold text-lg hover:bg-[#1ed760] hover:scale-105 hover:shadow-[0_0_40px_rgba(29,185,84,0.4)] transition-all duration-300"
+          >
             Download Spotify Free
-          </button>
+          </a>
         </div>
 
         {/* Devices showcase (Abstracted with CSS shapes/glass for simplicity & performance) */}
@@ -55,9 +60,15 @@ export default function DownloadPage() {
           </div>
           <div className="flex flex-wrap justify-center gap-4">
             {['Mac', 'Windows', 'iOS', 'Android', 'Linux'].map((os) => (
-              <button key={os} className="px-6 py-3 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 hover:border-white/40 transition-all">
+              <a 
+                key={os} 
+                href="https://www.spotify.com/download/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 hover:border-white/40 transition-all"
+              >
                 {os}
-              </button>
+              </a>
             ))}
           </div>
         </div>
