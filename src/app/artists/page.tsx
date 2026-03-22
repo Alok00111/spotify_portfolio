@@ -22,9 +22,9 @@ export default function ArtistsPage() {
             Spotify for Artists
           </div>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-8 font-[family-name:var(--font-outfit)] text-glow-white">
-            <TextAnimate animation="blurInUp" by="word" as="span" className="inline-block">Your music.</TextAnimate> <br />
+            <TextAnimate animation="blurInUp" by="word" as="span" className="inline-block" startOnView={false}>Your music.</TextAnimate> <br />
             <span className="text-muted-foreground">
-              <TextAnimate animation="blurInUp" by="word" delay={0.2} as="span" className="inline-block">Your audience.</TextAnimate>
+              <TextAnimate animation="blurInUp" by="word" delay={0.2} as="span" className="inline-block" startOnView={false}>Your audience.</TextAnimate>
             </span> <br />
             <span className="text-gradient-green text-glow-green">
               Your <WordRotate words={["terms.", "fans.", "future.", "growth."]} className="text-gradient-green" duration={3000} />
