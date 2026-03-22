@@ -30,9 +30,16 @@ export default function ArtistsPage() {
               Your <WordRotate words={["terms.", "fans.", "future.", "growth."]} className="text-gradient-green" duration={3000} />
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          <TextAnimate 
+            as="p" 
+            animation="blurIn" 
+            by="word" 
+            delay={0.4} 
+            startOnView={false}
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+          >
             Get the tools you need to build your fan base, analyze your streaming data, and pitch your unreleased tracks to our editorial team.
-          </p>
+          </TextAnimate>
           <button className="px-8 py-4 rounded-full bg-white text-black text-sm font-bold hover:bg-spotify hover:shadow-[0_0_40px_rgba(29,185,84,0.4)] transition-all duration-300">
             Claim Your Profile
           </button>
