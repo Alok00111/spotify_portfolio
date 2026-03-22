@@ -213,7 +213,7 @@ export default function FooterCTA() {
             {/* Social icons */}
             <div className="flex items-center gap-4">
               {socialIcons.map((social) => {
-                const socialHref = social.name === 'Instagram' ? 'https://instagram.com/spotify' : social.name === 'Twitter' ? 'https://twitter.com/spotify' : 'https://facebook.com/spotify';
+                const socialHref = social.name === 'Instagram' ? 'https://instagram.com' : social.name === 'Twitter' ? 'https://twitter.com' : 'https://facebook.com';
                 return (
                   <a
                     key={social.name}
@@ -236,7 +236,7 @@ export default function FooterCTA() {
               <Link href="/privacy-policy" className="hover:text-muted-foreground transition-colors">Privacy Policy</Link>
               <Link href="/cookies" className="hover:text-muted-foreground transition-colors">Cookies</Link>
               <Link href="/about-ads" className="hover:text-muted-foreground transition-colors">About Ads</Link>
-              <span>© 2026 Spotify AB</span>
+              <span>© {new Date().getFullYear()} Personal Project</span>
             </div>
           </div>
         </div>
