@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import BlurFade from "@/components/ui/blur-fade";
-import Particles from "@/components/ui/particles";
-import SparklesText from "@/components/ui/sparkles-text";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { Particles } from "@/components/ui/particles";
+import { SparklesText } from "@/components/ui/sparkles-text";
 
 interface ContentPageLayoutProps {
   title: string;
@@ -36,11 +36,12 @@ export default function ContentPageLayout({
         <div className="mb-16">
           <BlurFade delay={0.1} inView>
             <SparklesText 
-              text={title} 
               className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-outfit)] tracking-tighter mb-6" 
               colors={{ first: "#1db954", second: "#ffffff" }}
               sparklesCount={6}
-            />
+            >
+              {title}
+            </SparklesText>
           </BlurFade>
           
           {subtitle && (
