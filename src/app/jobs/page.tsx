@@ -38,12 +38,14 @@ export default function JobsPage() {
           </div>
           
           <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-3xl overflow-hidden glass border-white/10 group">
-            {/* Mock Image Area */}
-            <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
-              <div className="text-muted-foreground/30 font-bold tracking-widest text-4xl transform -rotate-12 group-hover:rotate-0 transition-transform duration-700">
-                CULTURE
-              </div>
-            </div>
+            {/* Culture Image */}
+            <img 
+              src="/jobs-culture.png" 
+              alt="Spotify Culture - Team collaborating" 
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             {/* Glowing Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-spotify/20 rounded-full blur-[100px] mix-blend-screen" />
           </div>
