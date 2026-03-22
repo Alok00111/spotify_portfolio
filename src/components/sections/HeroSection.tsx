@@ -4,9 +4,6 @@ import { useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { AuroraText } from "@/components/ui/aurora-text";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
-import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -108,17 +105,8 @@ export default function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center flex flex-col items-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
         <div className="h-10"></div>
-
-        {/* Badge */}
-        <div className="mb-6 opacity-0 translate-y-4 animate-fade-in [animation-delay:1.5s] [animation-fill-mode:forwards]">
-          <div className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md">
-            <AnimatedShinyText className="inline-flex items-center justify-center font-medium text-sm transition ease-out hover:text-white/90 hover:duration-300">
-              ✨ Discover Spatial Audio
-            </AnimatedShinyText>
-          </div>
-        </div>
 
         {/* Headline */}
         <h1
@@ -126,18 +114,16 @@ export default function HeroSection() {
           className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.9] mb-8 font-[family-name:var(--font-outfit)]"
           style={{ perspective: "1000px" }}
         >
-          <AuroraText colors={["#1DB954", "#1ed760", "#ffffff", "#1DB954"]} speed={1.5}>
-            {headlineText.split(" ").map((word, i) => (
-              <span
-                key={i}
-                className="word inline-block"
-                style={{ transformOrigin: "center bottom" }}
-              >
-                {word}
-                {i < headlineText.split(" ").length - 1 && "\u00A0"}
-              </span>
-            ))}
-          </AuroraText>
+          {headlineText.split(" ").map((word, i) => (
+            <span
+              key={i}
+              className="word inline-block text-gradient-hero"
+              style={{ transformOrigin: "center bottom" }}
+            >
+              {word}
+              {i < headlineText.split(" ").length - 1 && "\u00A0"}
+            </span>
+          ))}
         </h1>
 
         {/* Subheadline */}
@@ -151,8 +137,8 @@ export default function HeroSection() {
 
         {/* CTA buttons */}
         <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <ShimmerButton
-            ref={magnetRef as any}
+          <button
+            ref={magnetRef}
             onClick={() => {
               if (!user) {
                 openAuthModal("signup");
@@ -160,12 +146,9 @@ export default function HeroSection() {
                 router.push("/web-player");
               }
             }}
-            shimmerColor="#ffffff"
-            shimmerSize="0.1em"
-            background="#1DB954"
-            className="group px-8 py-3.5 text-black font-bold text-base hover:shadow-[0_0_60px_rgba(29,185,84,0.5)]"
+            className="group relative px-10 py-4 rounded-full bg-spotify text-black text-base font-bold hover:shadow-[0_0_60px_rgba(29,185,84,0.5)] transition-shadow duration-500"
           >
-            <span className="relative z-10 flex items-center gap-2 whitespace-pre-wrap text-center text-black">
+            <span className="relative z-10 flex items-center gap-2">
               {user ? "Open Web Player" : "Start Listening Free"}
               <svg
                 className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
@@ -177,7 +160,7 @@ export default function HeroSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </span>
-          </ShimmerButton>
+          </button>
 
           <a
             href="#features"

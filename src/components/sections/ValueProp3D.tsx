@@ -6,10 +6,6 @@ import { Float, MeshDistortMaterial, MeshWobbleMaterial, Environment } from "@re
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
-import { NumberTicker } from "@/components/ui/number-ticker";
-import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
-import { BlurFade } from "@/components/ui/blur-fade";
-import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -145,20 +141,8 @@ export default function ValueProp3D() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-background"
+      className="relative min-h-screen flex items-center overflow-hidden"
     >
-      {/* Animated Grid Pattern */}
-      <AnimatedGridPattern
-        numSquares={30}
-        maxOpacity={0.1}
-        duration={3}
-        repeatDelay={1}
-        className={cn(
-          "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
-          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
-        )}
-      />
-
       {/* 3D Canvas */}
       <div className="absolute inset-0 z-0">
         <Suspense
@@ -188,25 +172,22 @@ export default function ValueProp3D() {
           <p className="text-spotify text-sm font-semibold tracking-widest uppercase mb-4">
             Why Spotify
           </p>
-          <BlurFade delay={0.25} inView>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 font-[family-name:var(--font-outfit)] text-gradient-primary">
-              Sound that moves you
-            </h2>
-          </BlurFade>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 font-[family-name:var(--font-outfit)] text-gradient-primary">
+            Sound that moves you
+          </h2>
           <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-8">
             Experience music in a whole new dimension. With spatial audio, lossless quality,
             and AI-curated playlists—every listen feels like the first time.
           </p>
           <div className="flex flex-wrap gap-6">
             {[
-              { value: 100, suffix: "M+", label: "Tracks" },
-              { value: 5, suffix: "B+", label: "Playlists" },
-              { value: 4, suffix: "M+", label: "Podcasts" },
+              { stat: "100M+", label: "Tracks" },
+              { stat: "5B+", label: "Playlists" },
+              { stat: "4M+", label: "Podcasts" },
             ].map((item) => (
               <div key={item.label} className="text-left">
-                <div className="text-3xl md:text-4xl font-bold text-gradient-green font-[family-name:var(--font-outfit)] flex items-baseline">
-                  <NumberTicker value={item.value} />
-                  <span>{item.suffix}</span>
+                <div className="text-3xl md:text-4xl font-bold text-gradient-green font-[family-name:var(--font-outfit)]">
+                  {item.stat}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">{item.label}</div>
               </div>

@@ -1,6 +1,9 @@
 import Navbar from "@/components/Navbar";
 import FooterCTA from "@/components/sections/FooterCTA";
 import SpotlightCard from "@/components/ui/SpotlightCard";
+import { NumberTicker } from "@/components/ui/number-ticker";
+import { TextAnimate } from "@/components/ui/text-animate";
+import { WordRotate } from "@/components/ui/word-rotate";
 
 export default function ArtistsPage() {
   return (
@@ -19,9 +22,13 @@ export default function ArtistsPage() {
             Spotify for Artists
           </div>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-8 font-[family-name:var(--font-outfit)] text-glow-white">
-            Your music. <br />
-            <span className="text-muted-foreground">Your audience.</span> <br />
-            <span className="text-gradient-green text-glow-green">Your terms.</span>
+            <TextAnimate animation="blurInUp" by="word" as="span" className="inline-block">Your music.</TextAnimate> <br />
+            <span className="text-muted-foreground">
+              <TextAnimate animation="blurInUp" by="word" delay={0.2} as="span" className="inline-block">Your audience.</TextAnimate>
+            </span> <br />
+            <span className="text-gradient-green text-glow-green">
+              Your <WordRotate words={["terms.", "fans.", "future.", "growth."]} className="text-gradient-green" duration={3000} />
+            </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
             Get the tools you need to build your fan base, analyze your streaming data, and pitch your unreleased tracks to our editorial team.
@@ -61,7 +68,7 @@ export default function ArtistsPage() {
               {/* Stat 1 */}
               <div className="border-b md:border-b-0 md:border-r border-white/10 pb-8 md:pb-0 md:pr-8">
                 <div className="text-sm tracking-widest uppercase text-muted-foreground mb-4 block">Monthly Listeners</div>
-                <div className="text-5xl font-bold mb-2 font-[family-name:var(--font-outfit)]">842,019</div>
+                <div className="text-5xl font-bold mb-2 font-[family-name:var(--font-outfit)]"><NumberTicker value={842019} className="text-white dark:text-white" /></div>
                 <div className="text-sm text-spotify flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
                   +12.4% vs last month
@@ -70,7 +77,7 @@ export default function ArtistsPage() {
               {/* Stat 2 */}
               <div className="border-b md:border-b-0 md:border-r border-white/10 pb-8 md:pb-0 md:px-8">
                 <div className="text-sm tracking-widest uppercase text-muted-foreground mb-4 block">Total Streams</div>
-                <div className="text-5xl font-bold mb-2 font-[family-name:var(--font-outfit)]">12.4M</div>
+                <div className="text-5xl font-bold mb-2 font-[family-name:var(--font-outfit)]"><NumberTicker value={12.4} decimalPlaces={1} className="text-white dark:text-white" />M</div>
                 <div className="text-sm text-spotify flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
                   +4.2% vs last month
@@ -80,7 +87,7 @@ export default function ArtistsPage() {
               <div className="md:pl-8">
                 <div className="text-sm tracking-widest uppercase text-muted-foreground mb-4 block">Top City</div>
                 <div className="text-5xl font-bold mb-2 font-[family-name:var(--font-outfit)]">London</div>
-                <div className="text-sm text-muted-foreground">32,491 listeners</div>
+                <div className="text-sm text-muted-foreground"><NumberTicker value={32491} className="text-white dark:text-white" /> listeners</div>
               </div>
             </div>
 

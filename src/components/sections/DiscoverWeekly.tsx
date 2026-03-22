@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MagicCard } from "@/components/ui/magic-card";
-import { BorderBeam } from "@/components/ui/border-beam";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import Link from "next/link";
 
 export interface DeezerPlaylist {
@@ -136,7 +135,7 @@ export default function DiscoverWeekly({ playlists }: { playlists?: DeezerPlayli
               ref={(el) => { if (el) cardsRef.current[index] = el; }}
               style={{ perspective: "1000px" }}
             >
-              <MagicCard className="hover:shadow-2xl transform-gpu hover:-translate-y-2 hover:rotate-x-[-2deg] flex-col" gradientColor="#1DB95415">
+              <SpotlightCard className="hover:shadow-2xl transform-gpu hover:-translate-y-2 hover:rotate-x-[-2deg]">
                 {/* Album art header */}
                 <div className={`h-48 relative overflow-hidden bg-gradient-to-br ${playlist.gradient}`}>
                   {playlist.image && (
@@ -183,19 +182,7 @@ export default function DiscoverWeekly({ playlists }: { playlists?: DeezerPlayli
                   <div className="w-3 h-3 rounded-full bg-spotify glow-green" />
                   <div className="w-[1px] h-6 bg-gradient-to-b from-spotify to-transparent" />
                 </div>
-
-                {/* Ambient Border Beam on Hover */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                  <BorderBeam
-                    size={200}
-                    duration={8}
-                    delay={index}
-                    colorFrom="#1DB954"
-                    colorTo="#ffffff"
-                    borderWidth={1.5}
-                  />
-                </div>
-              </MagicCard>
+              </SpotlightCard>
             </div>
           ))}
         </div>
