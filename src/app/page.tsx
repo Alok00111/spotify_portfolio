@@ -10,6 +10,7 @@ import PremiumTiers from "@/components/sections/PremiumTiers";
 import CrossPlatform from "@/components/sections/CrossPlatform";
 import FooterCTA from "@/components/sections/FooterCTA";
 import { getFeaturedPlaylists, getNewReleases } from "@/lib/spotify";
+import { TextAnimate } from "@/components/ui/text-animate";
 
 // Force dynamic rendering — this page fetches live Spotify data
 export const dynamic = "force-dynamic";
@@ -39,6 +40,18 @@ export default async function Home() {
       <main>
         {/* Section 1: Hero */}
         <HeroSection />
+
+        <div className="py-20 bg-[#0a0a0a] border-t border-b border-white/[0.05] flex justify-center items-center px-6 text-center shadow-[0_0_100px_rgba(29,185,84,0.05)_inset]">
+          <TextAnimate 
+            as="p" 
+            animation="blurIn" 
+            by="word" 
+            delay={0.2} 
+            className="text-xl md:text-3xl lg:text-4xl text-foreground max-w-4xl mx-auto font-medium leading-relaxed font-[family-name:var(--font-outfit)]"
+          >
+            Get the tools you need to build your fan base, analyze your streaming data, and pitch your unreleased tracks to our editorial team.
+          </TextAnimate>
+        </div>
 
         {/* Section 2: 3D Value Prop */}
         <ValueProp3DWrapper />
