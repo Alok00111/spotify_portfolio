@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/Navbar";
 import FooterCTA from "@/components/sections/FooterCTA";
+import { Marquee } from "@/components/ui/marquee";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -135,6 +136,32 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Marquee Section */}
+      <section className="py-10 bg-background overflow-hidden border-y border-white/5 relative z-10 flex flex-col justify-center">
+        <Marquee pauseOnHover className="[--duration:30s] py-4">
+          {["ROCK", "HIP-HOP", "JAZZ", "POP", "ELECTRONIC", "CLASSICAL", "R&B", "COUNTRY", "INDIE", "BLUES"].map((genre) => (
+            <span 
+              key={genre} 
+              className="mx-8 text-5xl md:text-7xl font-[family-name:var(--font-outfit)] font-bold text-transparent"
+              style={{ WebkitTextStroke: "1px rgba(255,255,255,0.15)" }}
+            >
+              {genre}
+            </span>
+          ))}
+        </Marquee>
+        <Marquee reverse pauseOnHover className="[--duration:25s] py-4">
+          {["PODCASTS", "AUDIOBOOKS", "AMBIENT", "METAL", "LO-FI", "PUNK", "REGGAE", "SOUL", "FUNK", "DISCO"].map((genre) => (
+            <span 
+              key={genre} 
+              className="mx-8 text-5xl md:text-7xl font-[family-name:var(--font-outfit)] font-bold text-transparent"
+              style={{ WebkitTextStroke: "1px rgba(255,255,255,0.15)" }}
+            >
+              {genre}
+            </span>
+          ))}
+        </Marquee>
       </section>
 
       <FooterCTA />
