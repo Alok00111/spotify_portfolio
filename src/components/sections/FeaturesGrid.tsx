@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SpotlightCard from "@/components/ui/SpotlightCard";
+import { WordRotate } from "@/components/ui/word-rotate";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -103,8 +104,17 @@ export default function FeaturesGrid() {
           <p className="text-spotify text-sm font-semibold tracking-widest uppercase mb-4">
             Features
           </p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter font-[family-name:var(--font-outfit)] text-gradient-primary">
-            Your music,<br />your way
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter font-[family-name:var(--font-outfit)] text-gradient-primary min-h-[120px] md:min-h-[160px] flex items-center justify-center">
+            <WordRotate 
+              words={[
+                "Your music, your way",
+                "Your podcasts, your pace",
+                "Your playlists, your vibe",
+                "Your sound, your soul",
+                "Your rhythm, your rules"
+              ]} 
+              className="text-gradient-primary"
+            />
           </h2>
         </div>
 
